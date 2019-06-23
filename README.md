@@ -2,6 +2,8 @@
 
 > A React hook to easily manage HTTP requests via [Axios](https://github.com/axios/axios)
 
+[![NPM](https://img.shields.io/npm/v/use-http-api.svg?style=plastic)](https://www.npmjs.com/package/use-http-api)
+
 # Install
 
 ```bash
