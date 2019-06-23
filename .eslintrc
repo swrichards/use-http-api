@@ -1,0 +1,25 @@
+---
+parser: "@typescript-eslint/parser"
+extends:
+    - airbnb
+    - plugin:import/typescript
+    - prettier
+    - prettier/@typescript-eslint
+    - prettier/babel
+    - prettier/react
+    - prettier/standard
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+    modules: true
+  project: "./tsconfig.json"
+settings:
+  # Support our absolute import configuration
+  import/resolver:
+    node:
+      moduleDirectory:
+      - node_modules
+      - src/
+rules:
+  # We allow .js extensions, as does CRA
+  react/jsx-filename-extension: 'off'

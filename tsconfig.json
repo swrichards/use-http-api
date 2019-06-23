@@ -12,7 +12,7 @@
     "sourceMap": true,
     "allowJs": false,
     "jsx": "preserve",
-    "declaration": true,
+    "declaration": false,
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
@@ -27,7 +27,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "resolveJsonModule": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "noEmit": true
   },
   "include": [
