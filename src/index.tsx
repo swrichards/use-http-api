@@ -78,15 +78,15 @@ type UseApiArgs = {
     bodyData?: object | any[],
 
     /**
-     * Optional: whether the request should be triggered immediately. Set to false
-     * if you want to invoke the request yourself. Defaults to true
+     * Whether the request should be triggered immediately. Set to false
+     * if you want to invoke the request yourself. Defaults to false
      */
-    autoTrigger: boolean,
+    asEffect?: boolean,
 };
 
 export const useApi = ({
     method = 'GET',
-    autoTrigger = true,
+    asEffect = true,
     url,
     defaultData,
     bodyData,
@@ -152,17 +152,15 @@ export const useApi = ({
      * If autoTrigger is set, we check initialLoad to ensure we only fire the
      * request once, and not on subsequent state changes
      */
-    if (autoTrigger) {
+    if (asEffect) {
         useEffect(() => {
-            if (initialLoad) {
-                /**
-                 * Include body data if method allows
-                 */
-                if (['POST', 'PATCH', 'PUT'].includes(method)) {
-                    sendRequest(bodyData);
-                } else sendRequest();
-            }
-        }, []);
+            /**
+             * Include body data if method allows
+             */
+            if (['POST', 'PATCH', 'PUT'].includes(method)) {
+                sendRequest(bodyData);
+            } else sendRequest();
+        }, [method, sendRequest, bodyData]);
     }
 
     const response: UseApiResponse = [
@@ -177,6 +175,7 @@ export const useApi = ({
         },
         sendRequest,
     ];
+
     return response;
 };
 
