@@ -59,7 +59,7 @@ type UseApiArgs = {
     /**
      * HTTP Method. Defaults to 'GET'
      */
-    method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS',
+    method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS',
 
     /**
      * Required: the request URL -- optionally use ApiContext to set a baseUrl
