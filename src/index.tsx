@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
 /**
@@ -51,7 +51,6 @@ type UseApiResponse = [
      * Return a Promise that resolves with the data from response body, or any
      * errors thrown.
      */
-    (requestData?: any[] | object) => Promise<any>,
     (requestData?: any[] | object) => Promise<any>
 ];
 
@@ -94,7 +93,6 @@ export const useApi = ({
 }: UseApiArgs) => {
     const [initialLoad, setInitialLoad] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState(defaultData || null)
     const [data, setData] = useState(defaultData || null);
     const [error, setError] = useState();
     const [status, setStatus] = useState();
@@ -108,41 +106,47 @@ export const useApi = ({
 
     /**
      * Requester function
+     *
+     * Wrapped in useCallback because we want to the requester method to have a
+     * stable reference so we can use it as a dependency in useEffect.
      */
-    const sendRequest = (requestData?: object | any[]) => {
-        const requestConfig = {
-            method,
-            url,
-            data: requestData,
-        };
+    const sendRequest = useCallback(
+        (requestData?: object | any[]) => {
+            const requestConfig = {
+                method,
+                url,
+                data: requestData,
+            };
 
-        /**
-         * Merge request config with global axios config. If empty,
-         * globalConfig defaults to {}
-         */
-        const axiosConfig = Object.assign({}, globalConfig, requestConfig);
+            /**
+             * Merge request config with global axios config. If empty,
+             * globalConfig defaults to {}
+             */
+            const axiosConfig = Object.assign({}, globalConfig, requestConfig);
 
-        /**
-         * Return a Promise to enable the calling code to chain
-         * network requests in the correct order.
-         */
-        return new Promise(async (resolve, reject) => {
-            setLoading(true);
-            try {
-                const response = await axios(axiosConfig);
-                setResponseObj(response);
-                setData(response.data);
-                setStatus(response.status);
-                resolve(data);
-            } catch (err) {
-                setError(error);
-                reject(err);
-            } finally {
-                setLoading(false);
-                if (initialLoad) setInitialLoad(false);
-            }
-        });
-    };
+            /**
+             * Return a Promise to enable the calling code to chain
+             * network requests in the correct order.
+             */
+            return new Promise(async (resolve, reject) => {
+                setLoading(true);
+                try {
+                    const response = await axios(axiosConfig);
+                    setResponseObj(response);
+                    setData(response.data);
+                    setStatus(response.status);
+                    resolve(response.data);
+                } catch (err) {
+                    setError(err);
+                    reject(err);
+                } finally {
+                    setLoading(false);
+                    if (initialLoad) setInitialLoad(false);
+                }
+            });
+        },
+        [method, url, globalConfig]
+    );
 
     /**
      * If autoTrigger is set, we check initialLoad to ensure we only fire the
