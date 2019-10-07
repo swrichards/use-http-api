@@ -52,6 +52,7 @@ type UseApiResponse = [
      * errors thrown.
      */
     (requestData?: any[] | object) => Promise<any>,
+    (requestData?: any[] | object) => Promise<any>
 ];
 
 type UseApiArgs = {
@@ -94,6 +95,7 @@ export const useApi = ({
     const [initialLoad, setInitialLoad] = useState(true);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(defaultData || null)
+    const [data, setData] = useState(defaultData || null);
     const [error, setError] = useState();
     const [status, setStatus] = useState();
     const [responseObj, setResponseObj] = useState();
